@@ -1,12 +1,12 @@
 """
-DBNet:  Differentiable Binarization Network for Text Detection
+DBNet: Differentiable Binarization Network for Text Detection
 
 Reference: https://arxiv.org/abs/1911.08947
 """
 
 import torch
 import torch.nn as nn
-import torch. nn.functional as F
+import torch.nn.functional as F
 
 
 class DifferentiableBinarization(nn.Module):
@@ -20,12 +20,12 @@ class DifferentiableBinarization(nn.Module):
         """
         Args:
             prob_map: [B, 1, H, W] 概率图
-            threshold_map:  [B, 1, H, W] 阈值图
+            threshold_map: [B, 1, H, W] 阈值图
         
         Returns:
             binary_map: [B, 1, H, W] 近似二值图
         """
-        binary_map = 1. 0 / (1.0 + torch. exp(-self.k * (prob_map - threshold_map)))
+        binary_map = 1.0 / (1.0 + torch.exp(-self.k * (prob_map - threshold_map)))
         return binary_map
 
 
@@ -123,14 +123,14 @@ class DBNet(nn.Module):
     def __init__(self, backbone='resnet18', pretrained=True, k=50):
         super().__init__()
         
-        if backbone == 'resnet18': 
+        if backbone == 'resnet18':
             from torchvision.models import resnet18
             resnet = resnet18(pretrained=pretrained)
             self.layer0 = nn.Sequential(resnet.conv1, resnet.bn1, resnet.relu, resnet.maxpool)
             self.layer1 = resnet.layer1
             self.layer2 = resnet.layer2
             self.layer3 = resnet.layer3
-            self.layer4 = resnet. layer4
+            self.layer4 = resnet.layer4
             in_channels = [64, 128, 256, 512]
         else:
             raise ValueError(f"Unsupported backbone: {backbone}")
